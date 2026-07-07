@@ -51,7 +51,7 @@ export default function ContactUs() {
   }
 
   const phone = settings.contact_phone || "+91 9876543210";
-  const email = settings.contact_email || "support@urbancomp.com";
+  const email = settings.contact_email || "support@sewabuddy.com";
   const whatsapp = settings.contact_whatsapp || phone.replace(/\D/g, "");
 
   return (

@@ -82,10 +82,11 @@ export default function Login() {
 
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm p-6">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 safe-area">
+      <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm p-5 sm:p-6">
         <div className="text-center mb-6">
-          <h1 className="text-lg font-bold text-gray-900">Urban<span className="text-amber-500">Comp</span></h1>
+          <img src="/logo.jpg" alt="SewaBuddy" className="w-14 h-14 sm:w-16 sm:h-16 rounded-xl object-cover mx-auto mb-2 shadow-sm" />
+          <h1 className="text-lg font-bold text-gray-900">Sewa<span className="text-amber-500">Buddy</span></h1>
           <p className="text-gray-400 text-xs mt-0.5">Home services at your doorstep</p>
         </div>
 

@@ -277,11 +277,12 @@ export default function Register() {
   // ─── USER REGISTRATION UI ─────────────────────────────────────────────────
   if (role === "USER") {
     return (
-      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-        <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm p-6">
+      <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 safe-area">
+        <div className="bg-white rounded-lg border border-gray-200 w-full max-w-sm p-5 sm:p-6">
           <div className="text-center mb-5">
+            <img src="/logo.jpg" alt="SewaBuddy" className="w-12 h-12 rounded-xl object-cover mx-auto mb-2 shadow-sm" />
             <h1 className="text-lg font-bold text-gray-900">Create Account</h1>
-            <p className="text-gray-400 text-xs mt-0.5">Join Urban<span className="text-amber-500">Comp</span> today</p>
+            <p className="text-gray-400 text-xs mt-0.5">Join Sewa<span className="text-amber-500">Buddy</span> today</p>
           </div>
           <div className="flex gap-1 bg-gray-100 rounded-md p-0.5 mb-4">
             {(["USER", "AGENT"] as const).map((r) => (
@@ -351,16 +352,17 @@ export default function Register() {
 
   // ─── AGENT MULTI-STEP REGISTRATION UI ────────────────────────────────────
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-lg border border-gray-200 w-full max-w-md p-6">
+    <div className="min-h-screen bg-gray-50 flex items-center justify-center p-4 safe-area">
+      <div className="bg-white rounded-lg border border-gray-200 w-full max-w-md p-5 sm:p-6">
         <div className="text-center mb-4">
+          <img src="/logo.jpg" alt="SewaBuddy" className="w-12 h-12 rounded-xl object-cover mx-auto mb-2 shadow-sm" />
           <h1 className="text-lg font-bold text-gray-900">
             {isResuming ? "Complete Your Profile" : "Become a Partner"}
           </h1>
           <p className="text-gray-400 text-xs mt-0.5">
             {isResuming
               ? "Pick up where you left off"
-              : <>Join Urban<span className="text-amber-500">Comp</span> as a service provider</>}
+              : <>Join Sewa<span className="text-amber-500">Buddy</span> as a service provider</>}
           </p>
         </div>
 

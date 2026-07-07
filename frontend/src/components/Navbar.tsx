@@ -47,12 +47,13 @@ export default function Navbar() {
       <div className="px-4 lg:px-6">
         <div className="flex justify-between h-14 items-center">
           <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2">
-              <span className="text-lg font-bold text-gray-900 tracking-tight">Urban<span className="text-amber-600">Comp</span></span>
-              <span className="text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider">
+            <Link to="/" className="flex items-center gap-2 min-w-0">
+              <img src="/logo.jpg" alt="SewaBuddy" className="w-7 h-7 sm:w-8 sm:h-8 rounded-md object-cover flex-shrink-0" />
+              <span className="text-base sm:text-lg font-bold text-gray-900 tracking-tight truncate">Sewa<span className="text-amber-600">Buddy</span></span>
+              <span className="hidden sm:inline text-[10px] bg-gray-100 text-gray-500 px-1.5 py-0.5 rounded font-semibold uppercase tracking-wider">
                 {role?.toLowerCase()}
               </span>
-            </div>
+            </Link>
 
             {/* Desktop nav - hidden on mobile */}
             <div className="hidden md:flex items-center gap-0.5">

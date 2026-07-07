@@ -253,6 +253,8 @@ model OrderGroup {
   @@index([userId, createdAt, id])
   @@index([userId])
   @@index([assignedAgentId])
+  @@index([status])
+  @@index([status, createdAt])
 }
 
 model OrderAssignment {

@@ -187,7 +187,7 @@ describe("Auth — Agent", () => {
     // The test agent needs to be verified first — verify via admin (admin is registered below,
     // so we use the seeded admin credentials for this)
     const adminLogin = await post("/auth/admin/login", {
-      email: "admin@urban.com",
+      email: "admin@sewabuddy.com",
       password: "admin@123",
     });
     const tempAdminToken = adminLogin.data.token;

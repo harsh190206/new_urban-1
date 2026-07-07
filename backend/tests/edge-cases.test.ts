@@ -89,7 +89,7 @@ let subserviceId = 0;
 beforeAll(async () => {
   // ── admin ──────────────────────────────────────────
   const adm = await post("/auth/admin/login", {
-    email: "admin@urban.com",
+    email: "admin@sewabuddy.com",
     password: "admin@123",
   });
   adminToken = adm.data.token;

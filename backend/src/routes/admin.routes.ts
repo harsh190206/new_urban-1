@@ -820,16 +820,23 @@ router.get("/agents", async (req, res) => {
       orderBy: { name: "asc" },
     });
 
-    // Attach total earnings for each agent (sum of completed order totalPrice)
-    const agentsWithEarnings = await Promise.all(
-      agents.map(async (agent) => {
-        const earnings = await prisma.orderGroup.aggregate({
-          _sum: { totalPrice: true },
-          where: { assignedAgentId: agent.id, status: "COMPLETED" },
-        });
-        return { ...agent, totalEarnings: earnings._sum.totalPrice ?? 0 };
-      }),
+    // Attach total earnings for each agent (sum of completed order totalPrice).
+    // Single grouped query instead of one aggregate per agent (was N+1).
+    const earningsByAgent = await prisma.orderGroup.groupBy({
+      by: ["assignedAgentId"],
+      where: {
+        status: "COMPLETED",
+        assignedAgentId: { in: agents.map((a) => a.id) },
+      },
+      _sum: { totalPrice: true },
+    });
+    const earningsMap = new Map(
+      earningsByAgent.map((e) => [e.assignedAgentId, e._sum.totalPrice ?? 0]),
     );
+    const agentsWithEarnings = agents.map((agent) => ({
+      ...agent,
+      totalEarnings: earningsMap.get(agent.id) ?? 0,
+    }));
 
     res.json({ agents: agentsWithEarnings });
   } catch {

@@ -7,10 +7,10 @@ async function seed() {
   // ── Admin ─────────────────────────────────────────────────────────────────
   const adminPassword = await bcrypt.hash("admin@123", 10);
   const admin = await prisma.admin.upsert({
-    where: { email: "admin@urban.com" },
+    where: { email: "admin@sewabuddy.com" },
     update: {},
     create: {
-      email: "admin@urban.com",
+      email: "admin@sewabuddy.com",
       password: adminPassword,
     },
   });
@@ -19,10 +19,10 @@ async function seed() {
   // ── User ──────────────────────────────────────────────────────────────────
   const userPassword = await bcrypt.hash("user@123", 10);
   const user = await prisma.user.upsert({
-    where: { email: "user@urban.com" },
+    where: { email: "user@sewabuddy.com" },
     update: {},
     create: {
-      email: "user@urban.com",
+      email: "user@sewabuddy.com",
       password: userPassword,
       address: {
         create: {
@@ -39,7 +39,7 @@ async function seed() {
   // ── Agent ─────────────────────────────────────────────────────────────────
   const agentPassword = await bcrypt.hash("agent@123", 10);
   const agent = await prisma.agent.upsert({
-    where: { email: "agent@urban.com" },
+    where: { email: "agent@sewabuddy.com" },
     update: {
       isVerified: true,
       type: "plumber",
@@ -47,7 +47,7 @@ async function seed() {
       address_proof: "https://example.com/seeded-address-proof.pdf",
     },
     create: {
-      email: "agent@urban.com",
+      email: "agent@sewabuddy.com",
       password: agentPassword,
       name: "Ravi Kumar",
       type: "plumber",
@@ -69,9 +69,9 @@ async function seed() {
   console.log("\nSeeding complete.");
   console.log("--------------------------------------");
   console.log("Login credentials:");
-  console.log("  Admin  -> admin@urban.com  / admin@123");
-  console.log("  User   -> user@urban.com   / user@123");
-  console.log("  Agent  -> agent@urban.com  / agent@123");
+  console.log("  Admin  -> admin@sewabuddy.com  / admin@123");
+  console.log("  User   -> user@sewabuddy.com   / user@123");
+  console.log("  Agent  -> agent@sewabuddy.com  / agent@123");
 }
 
 seed()

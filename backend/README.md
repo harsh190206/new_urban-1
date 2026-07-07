@@ -1,4 +1,4 @@
-# urban
+# sewabuddy
 
 To install dependencies:
 

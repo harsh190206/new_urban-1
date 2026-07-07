@@ -4,6 +4,33 @@
 html {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  overflow-x: hidden;
+  word-wrap: break-word;
+}
+
+/* iOS safe area handling for notched devices */
+.safe-area-bottom {
+  padding-bottom: env(safe-area-inset-bottom, 0px);
+}
+.safe-area {
+  padding-left: max(1rem, env(safe-area-inset-left));
+  padding-right: max(1rem, env(safe-area-inset-right));
+  padding-top: max(1rem, env(safe-area-inset-top));
+  padding-bottom: max(1rem, env(safe-area-inset-bottom));
+}
+
+/* Bigger tap targets on mobile (44px Apple HIG / 48dp Material) */
+@media (max-width: 768px) {
+  button, a, [role="button"] {
+    touch-action: manipulation;
+  }
+  input, select, textarea {
+    font-size: 16px; /* prevent iOS Safari auto-zoom on focus */
+  }
 }
 
 /* Tighter scrollbar */
