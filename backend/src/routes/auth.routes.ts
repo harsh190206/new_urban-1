@@ -11,6 +11,7 @@ import {
   registerAgent,
   loginAgent,
 } from "../controllers/auth/agent.auth.controller.ts";
+import { checkPhoneAvailability } from "../controllers/auth/phone.controller.ts";
 import { prisma } from "../../db/index.ts";
 import { upload } from "../middleware/upload.middleware.ts";
 
@@ -52,6 +53,10 @@ router.get("/categories/active", async (_req, res) => {
     res.status(500).json({ error: "Something went wrong" });
   }
 });
+
+// Public: is this number free for the given role? Called before an OTP is sent
+// so a duplicate signup never costs an SMS.
+router.post("/phone/check", checkPhoneAvailability);
 
 // User routes
 router.post("/user/register", registerUser);

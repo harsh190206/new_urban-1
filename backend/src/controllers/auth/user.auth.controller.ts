@@ -3,20 +3,36 @@ import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 import { prisma } from "../../../db/index.ts";
 import { env } from "../../config/env.ts";
+import {
+  PhoneValidationError,
+  resolveVerifiedPhone,
+} from "./phone.controller.ts";
+import { duplicateField } from "../../utils/prisma-errors.ts";
 
 export async function registerUser(req: Request, res: Response): Promise<void> {
-  const { email, password, name, address, pin, city, phone, phoneCountry, profilepic } =
-    req.body as {
-      email?: string;
-      password?: string;
-      name?: string;
-      address?: string;
-      pin?: string;
-      city?: string;
-      phone?: string;
-      phoneCountry?: string;
-      profilepic?: string;
-    };
+  const {
+    email,
+    password,
+    name,
+    address,
+    pin,
+    city,
+    phone,
+    phoneCountry,
+    firebaseIdToken,
+    profilepic,
+  } = req.body as {
+    email?: string;
+    password?: string;
+    name?: string;
+    address?: string;
+    pin?: string;
+    city?: string;
+    phone?: string;
+    phoneCountry?: string;
+    firebaseIdToken?: string;
+    profilepic?: string;
+  };
 
   if (!email || !password || !address || !pin || !phone) {
     res.status(400).json({
@@ -31,38 +47,66 @@ export async function registerUser(req: Request, res: Response): Promise<void> {
     return;
   }
 
-  // Check phone uniqueness (format with country code first)
-  const countryCode = phoneCountry === "USA" ? "+1" : "+91";
-  const normalizedPhone = `${countryCode}${phone}`;
-  const existingPhone = await prisma.user.findFirst({ where: { phone: normalizedPhone } });
-  if (existingPhone) {
-    res.status(409).json({ message: "Phone number is already registered" });
-    return;
+  // Proves the number belongs to whoever is signing up, and that it is not
+  // already taken. Throws with the status to return on any failure.
+  let normalizedPhone: string;
+  try {
+    normalizedPhone = await resolveVerifiedPhone({
+      phone,
+      phoneCountry,
+      firebaseIdToken,
+      owner: "USER",
+    });
+  } catch (err) {
+    if (err instanceof PhoneValidationError) {
+      res.status(err.status).json({ message: err.message });
+      return;
+    }
+    throw err;
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
 
-  const user = await prisma.user.create({
-    data: {
-      email,
-      password: hashedPassword,
-      ...(name && { name }),
-      phone: normalizedPhone,
-      ...(profilepic && { profilepic }),
-      address: {
-        create: {
-          address,
-          pin,
-          ...(city && { city: city.trim().toLowerCase() }),
-          label: "Home",
-          isUser: true,
+  let user;
+  try {
+    user = await prisma.user.create({
+      data: {
+        email,
+        password: hashedPassword,
+        ...(name && { name }),
+        phone: normalizedPhone,
+        ...(phoneCountry && { phoneCountry }),
+        phoneVerified: true,
+        ...(profilepic && { profilepic }),
+        address: {
+          create: {
+            address,
+            pin,
+            ...(city && { city: city.trim().toLowerCase() }),
+            label: "Home",
+            isUser: true,
+          },
         },
       },
-    },
-    include: {
-      address: true,
-    },
-  });
+      include: {
+        address: true,
+      },
+    });
+  } catch (err) {
+    // Two signups racing on the same email or number: the checks above both
+    // passed, the unique index decides who wins.
+    const duplicated = duplicateField(err);
+    if (duplicated) {
+      res.status(409).json({
+        message:
+          duplicated === "phone"
+            ? "This phone number is already registered. Please login instead."
+            : "Email is already registered",
+      });
+      return;
+    }
+    throw err;
+  }
 
   const primaryAddress = user.address[0] ?? null;
 

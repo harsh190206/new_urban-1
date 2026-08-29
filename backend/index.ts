@@ -106,7 +106,7 @@ app.get("/api/public/faqs", async (_req, res) => {
   }
 });
 
-app.listen(3000, () => {
+app.listen(Number(env.PORT), () => {
   console.log(`Server running on port ${env.PORT}`);
 });
 

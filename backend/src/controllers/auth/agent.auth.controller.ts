@@ -4,6 +4,11 @@ import jwt from "jsonwebtoken";
 import { prisma } from "../../../db/index.ts";
 import { env } from "../../config/env.ts";
 import { cloudinary } from "../../config/cloudinary.ts";
+import {
+  PhoneValidationError,
+  resolveVerifiedPhone,
+} from "./phone.controller.ts";
+import { duplicateField } from "../../utils/prisma-errors.ts";
 
 // Helper: upload a buffer to Cloudinary and return the secure URL
 function uploadToCloudinary(
@@ -38,6 +43,7 @@ export async function registerAgent(
     city?: string;
     phone?: string;
     phoneCountry?: string;
+    firebaseIdToken?: string;
     profilepic?: string;
     accountNumber?: string;
     holderName?: string;
@@ -55,6 +61,7 @@ export async function registerAgent(
     city,
     phone,
     phoneCountry,
+    firebaseIdToken,
     profilepic,
     accountNumber,
     holderName,
@@ -99,9 +106,9 @@ export async function registerAgent(
     });
   }
 
-  if (!email || !password || !name || !address || !pin) {
+  if (!email || !password || !name || !address || !pin || !phone) {
     res.status(400).json({
-      message: "Required fields: email, password, name, address, pin",
+      message: "Required fields: email, password, name, address, pin, phone",
     });
     return;
   }
@@ -115,6 +122,24 @@ export async function registerAgent(
   if (existing) {
     res.status(409).json({ message: "Email is already registered" });
     return;
+  }
+
+  // Verified before the Cloudinary uploads below — a rejected signup must not
+  // leave orphaned images behind or pay for uploads it will never use.
+  let formattedPhone: string;
+  try {
+    formattedPhone = await resolveVerifiedPhone({
+      phone,
+      phoneCountry,
+      firebaseIdToken,
+      owner: "AGENT",
+    });
+  } catch (err) {
+    if (err instanceof PhoneValidationError) {
+      res.status(err.status).json({ message: err.message });
+      return;
+    }
+    throw err;
   }
 
   const hashedPassword = await bcrypt.hash(password, 10);
@@ -151,61 +176,75 @@ export async function registerAgent(
     if (cat) categoryIds = [cat.id];
   }
 
-  // Format phone number with country code
-  let formattedPhone: string | undefined;
-  if (phone) {
-    const countryCode = phoneCountry === "USA" ? "+1" : "+91";
-    formattedPhone = `${countryCode}${phone}`;
-  }
-
-  const agent = await prisma.agent.create({
-    data: {
-      email,
-      password: hashedPassword,
-      name,
-      type: (type ?? categoryIds.length > 0) ? (type ?? "multi") : "general",
-      ...(formattedPhone && { phone: formattedPhone }),
-      ...(profilepic && { profilepic }),
-      ...(docUrls.get("doc_id_proof") && {
-        id_proof: docUrls.get("doc_id_proof"),
-      }),
-      ...(docUrls.get("doc_address_proof") && {
-        address_proof: docUrls.get("doc_address_proof"),
-      }),
-      address: {
-        create: {
-          address,
-          pin,
-          ...(city && { city: city.trim().toLowerCase() }),
-          isUser: false,
-        },
-      },
-      ...(hasBankDetails && {
-        bankDetails: {
+  let agent;
+  try {
+    agent = await prisma.agent.create({
+      data: {
+        email,
+        password: hashedPassword,
+        name,
+        type: (type ?? categoryIds.length > 0) ? (type ?? "multi") : "general",
+        phone: formattedPhone,
+        ...(phoneCountry && { phoneCountry }),
+        phoneVerified: true,
+        ...(profilepic && { profilepic }),
+        ...(docUrls.get("doc_id_proof") && {
+          id_proof: docUrls.get("doc_id_proof"),
+        }),
+        ...(docUrls.get("doc_address_proof") && {
+          address_proof: docUrls.get("doc_address_proof"),
+        }),
+        address: {
           create: {
-            accountNumber: accountNumber!,
-            holderName: holderName!,
-            ifscCode: ifscCode!,
-            bankName: bankName!,
+            address,
+            pin,
+            ...(city && { city: city.trim().toLowerCase() }),
+            isUser: false,
           },
         },
-      }),
-      ...(categoryIds.length > 0 && {
-        categories: {
-          create: categoryIds.map((catId) => ({
-            categoryId: catId,
-          })),
-        },
-      }),
-    },
-    include: {
-      address: true,
-      bankDetails: true,
-      categories: {
-        include: { category: { select: { id: true, name: true, slug: true } } },
+        ...(hasBankDetails && {
+          bankDetails: {
+            create: {
+              accountNumber: accountNumber!,
+              holderName: holderName!,
+              ifscCode: ifscCode!,
+              bankName: bankName!,
+            },
+          },
+        }),
+        ...(categoryIds.length > 0 && {
+          categories: {
+            create: categoryIds.map((catId) => ({
+              categoryId: catId,
+            })),
+          },
+        }),
       },
-    },
-  });
+      include: {
+        address: true,
+        bankDetails: true,
+        categories: {
+          include: {
+            category: { select: { id: true, name: true, slug: true } },
+          },
+        },
+      },
+    });
+  } catch (err) {
+    // Two signups racing on the same email or number: the checks above both
+    // passed, the unique index decides who wins.
+    const duplicated = duplicateField(err);
+    if (duplicated) {
+      res.status(409).json({
+        message:
+          duplicated === "phone"
+            ? "This phone number is already registered. Please login instead."
+            : "Email is already registered",
+      });
+      return;
+    }
+    throw err;
+  }
 
   // Save dynamic requirement documents so admin can review them.
   // Also replicate one uploaded document across same-name requirements

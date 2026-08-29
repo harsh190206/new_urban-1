@@ -96,6 +96,7 @@ export const UserScalarFieldEnum = {
   password: 'password',
   phone: 'phone',
   phoneCountry: 'phoneCountry',
+  phoneVerified: 'phoneVerified',
   profilepic: 'profilepic',
   createdAt: 'createdAt'
 } as const
@@ -142,6 +143,7 @@ export const AgentScalarFieldEnum = {
   password: 'password',
   phone: 'phone',
   phoneCountry: 'phoneCountry',
+  phoneVerified: 'phoneVerified',
   profilepic: 'profilepic',
   id_proof: 'id_proof',
   address_proof: 'address_proof',

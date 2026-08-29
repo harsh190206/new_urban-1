@@ -41,6 +41,7 @@ export type UserMinAggregateOutputType = {
   password: string | null
   phone: string | null
   phoneCountry: string | null
+  phoneVerified: boolean | null
   profilepic: string | null
   createdAt: Date | null
 }
@@ -52,6 +53,7 @@ export type UserMaxAggregateOutputType = {
   password: string | null
   phone: string | null
   phoneCountry: string | null
+  phoneVerified: boolean | null
   profilepic: string | null
   createdAt: Date | null
 }
@@ -63,6 +65,7 @@ export type UserCountAggregateOutputType = {
   password: number
   phone: number
   phoneCountry: number
+  phoneVerified: number
   profilepic: number
   createdAt: number
   _all: number
@@ -84,6 +87,7 @@ export type UserMinAggregateInputType = {
   password?: true
   phone?: true
   phoneCountry?: true
+  phoneVerified?: true
   profilepic?: true
   createdAt?: true
 }
@@ -95,6 +99,7 @@ export type UserMaxAggregateInputType = {
   password?: true
   phone?: true
   phoneCountry?: true
+  phoneVerified?: true
   profilepic?: true
   createdAt?: true
 }
@@ -106,6 +111,7 @@ export type UserCountAggregateInputType = {
   password?: true
   phone?: true
   phoneCountry?: true
+  phoneVerified?: true
   profilepic?: true
   createdAt?: true
   _all?: true
@@ -204,6 +210,7 @@ export type UserGroupByOutputType = {
   password: string
   phone: string | null
   phoneCountry: string
+  phoneVerified: boolean
   profilepic: string | null
   createdAt: Date
   _count: UserCountAggregateOutputType | null
@@ -238,6 +245,7 @@ export type UserWhereInput = {
   password?: Prisma.StringFilter<"User"> | string
   phone?: Prisma.StringNullableFilter<"User"> | string | null
   phoneCountry?: Prisma.StringFilter<"User"> | string
+  phoneVerified?: Prisma.BoolFilter<"User"> | boolean
   profilepic?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   order?: Prisma.OrderGroupListRelationFilter
@@ -252,6 +260,7 @@ export type UserOrderByWithRelationInput = {
   password?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   phoneCountry?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   profilepic?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   order?: Prisma.OrderGroupOrderByRelationAggregateInput
@@ -262,19 +271,20 @@ export type UserOrderByWithRelationInput = {
 export type UserWhereUniqueInput = Prisma.AtLeast<{
   id?: number
   email?: string
+  phone?: string
   AND?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   OR?: Prisma.UserWhereInput[]
   NOT?: Prisma.UserWhereInput | Prisma.UserWhereInput[]
   name?: Prisma.StringNullableFilter<"User"> | string | null
   password?: Prisma.StringFilter<"User"> | string
-  phone?: Prisma.StringNullableFilter<"User"> | string | null
   phoneCountry?: Prisma.StringFilter<"User"> | string
+  phoneVerified?: Prisma.BoolFilter<"User"> | boolean
   profilepic?: Prisma.StringNullableFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeFilter<"User"> | Date | string
   order?: Prisma.OrderGroupListRelationFilter
   notifications?: Prisma.NotificationListRelationFilter
   address?: Prisma.AddressListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "phone">
 
 export type UserOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -283,6 +293,7 @@ export type UserOrderByWithAggregationInput = {
   password?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   phoneCountry?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   profilepic?: Prisma.SortOrderInput | Prisma.SortOrder
   createdAt?: Prisma.SortOrder
   _count?: Prisma.UserCountOrderByAggregateInput
@@ -302,6 +313,7 @@ export type UserScalarWhereWithAggregatesInput = {
   password?: Prisma.StringWithAggregatesFilter<"User"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   phoneCountry?: Prisma.StringWithAggregatesFilter<"User"> | string
+  phoneVerified?: Prisma.BoolWithAggregatesFilter<"User"> | boolean
   profilepic?: Prisma.StringNullableWithAggregatesFilter<"User"> | string | null
   createdAt?: Prisma.DateTimeWithAggregatesFilter<"User"> | Date | string
 }
@@ -312,6 +324,7 @@ export type UserCreateInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   createdAt?: Date | string
   order?: Prisma.OrderGroupCreateNestedManyWithoutUserInput
@@ -326,6 +339,7 @@ export type UserUncheckedCreateInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   createdAt?: Date | string
   order?: Prisma.OrderGroupUncheckedCreateNestedManyWithoutUserInput
@@ -339,6 +353,7 @@ export type UserUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderGroupUpdateManyWithoutUserNestedInput
@@ -353,6 +368,7 @@ export type UserUncheckedUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderGroupUncheckedUpdateManyWithoutUserNestedInput
@@ -367,6 +383,7 @@ export type UserCreateManyInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   createdAt?: Date | string
 }
@@ -377,6 +394,7 @@ export type UserUpdateManyMutationInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -388,6 +406,7 @@ export type UserUncheckedUpdateManyInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
 }
@@ -399,6 +418,7 @@ export type UserCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   phoneCountry?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   profilepic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -414,6 +434,7 @@ export type UserMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   phoneCountry?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   profilepic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -425,6 +446,7 @@ export type UserMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   phoneCountry?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   profilepic?: Prisma.SortOrder
   createdAt?: Prisma.SortOrder
 }
@@ -449,6 +471,10 @@ export type NullableStringFieldUpdateOperationsInput = {
 
 export type StringFieldUpdateOperationsInput = {
   set?: string
+}
+
+export type BoolFieldUpdateOperationsInput = {
+  set?: boolean
 }
 
 export type DateTimeFieldUpdateOperationsInput = {
@@ -513,6 +539,7 @@ export type UserCreateWithoutAddressInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   createdAt?: Date | string
   order?: Prisma.OrderGroupCreateNestedManyWithoutUserInput
@@ -526,6 +553,7 @@ export type UserUncheckedCreateWithoutAddressInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   createdAt?: Date | string
   order?: Prisma.OrderGroupUncheckedCreateNestedManyWithoutUserInput
@@ -554,6 +582,7 @@ export type UserUpdateWithoutAddressInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderGroupUpdateManyWithoutUserNestedInput
@@ -567,6 +596,7 @@ export type UserUncheckedUpdateWithoutAddressInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderGroupUncheckedUpdateManyWithoutUserNestedInput
@@ -579,6 +609,7 @@ export type UserCreateWithoutOrderInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   createdAt?: Date | string
   notifications?: Prisma.notificationCreateNestedManyWithoutUserInput
@@ -592,6 +623,7 @@ export type UserUncheckedCreateWithoutOrderInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   createdAt?: Date | string
   notifications?: Prisma.notificationUncheckedCreateNestedManyWithoutUserInput
@@ -620,6 +652,7 @@ export type UserUpdateWithoutOrderInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notifications?: Prisma.notificationUpdateManyWithoutUserNestedInput
@@ -633,6 +666,7 @@ export type UserUncheckedUpdateWithoutOrderInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   notifications?: Prisma.notificationUncheckedUpdateManyWithoutUserNestedInput
@@ -645,6 +679,7 @@ export type UserCreateWithoutNotificationsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   createdAt?: Date | string
   order?: Prisma.OrderGroupCreateNestedManyWithoutUserInput
@@ -658,6 +693,7 @@ export type UserUncheckedCreateWithoutNotificationsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   createdAt?: Date | string
   order?: Prisma.OrderGroupUncheckedCreateNestedManyWithoutUserInput
@@ -686,6 +722,7 @@ export type UserUpdateWithoutNotificationsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderGroupUpdateManyWithoutUserNestedInput
@@ -699,6 +736,7 @@ export type UserUncheckedUpdateWithoutNotificationsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   createdAt?: Prisma.DateTimeFieldUpdateOperationsInput | Date | string
   order?: Prisma.OrderGroupUncheckedUpdateManyWithoutUserNestedInput
@@ -761,6 +799,7 @@ export type UserSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = r
   password?: boolean
   phone?: boolean
   phoneCountry?: boolean
+  phoneVerified?: boolean
   profilepic?: boolean
   createdAt?: boolean
   order?: boolean | Prisma.User$orderArgs<ExtArgs>
@@ -776,6 +815,7 @@ export type UserSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   phone?: boolean
   phoneCountry?: boolean
+  phoneVerified?: boolean
   profilepic?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -787,6 +827,7 @@ export type UserSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensio
   password?: boolean
   phone?: boolean
   phoneCountry?: boolean
+  phoneVerified?: boolean
   profilepic?: boolean
   createdAt?: boolean
 }, ExtArgs["result"]["user"]>
@@ -798,11 +839,12 @@ export type UserSelectScalar = {
   password?: boolean
   phone?: boolean
   phoneCountry?: boolean
+  phoneVerified?: boolean
   profilepic?: boolean
   createdAt?: boolean
 }
 
-export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "phone" | "phoneCountry" | "profilepic" | "createdAt", ExtArgs["result"]["user"]>
+export type UserOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "email" | "password" | "phone" | "phoneCountry" | "phoneVerified" | "profilepic" | "createdAt", ExtArgs["result"]["user"]>
 export type UserInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   order?: boolean | Prisma.User$orderArgs<ExtArgs>
   notifications?: boolean | Prisma.User$notificationsArgs<ExtArgs>
@@ -826,6 +868,7 @@ export type $UserPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs =
     password: string
     phone: string | null
     phoneCountry: string
+    phoneVerified: boolean
     profilepic: string | null
     createdAt: Date
   }, ExtArgs["result"]["user"]>
@@ -1260,6 +1303,7 @@ export interface UserFieldRefs {
   readonly password: Prisma.FieldRef<"User", 'String'>
   readonly phone: Prisma.FieldRef<"User", 'String'>
   readonly phoneCountry: Prisma.FieldRef<"User", 'String'>
+  readonly phoneVerified: Prisma.FieldRef<"User", 'Boolean'>
   readonly profilepic: Prisma.FieldRef<"User", 'String'>
   readonly createdAt: Prisma.FieldRef<"User", 'DateTime'>
 }

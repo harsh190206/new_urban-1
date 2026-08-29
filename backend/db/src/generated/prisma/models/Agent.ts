@@ -50,6 +50,7 @@ export type AgentMinAggregateOutputType = {
   password: string | null
   phone: string | null
   phoneCountry: string | null
+  phoneVerified: boolean | null
   profilepic: string | null
   id_proof: string | null
   address_proof: string | null
@@ -68,6 +69,7 @@ export type AgentMaxAggregateOutputType = {
   password: string | null
   phone: string | null
   phoneCountry: string | null
+  phoneVerified: boolean | null
   profilepic: string | null
   id_proof: string | null
   address_proof: string | null
@@ -86,6 +88,7 @@ export type AgentCountAggregateOutputType = {
   password: number
   phone: number
   phoneCountry: number
+  phoneVerified: number
   profilepic: number
   id_proof: number
   address_proof: number
@@ -118,6 +121,7 @@ export type AgentMinAggregateInputType = {
   password?: true
   phone?: true
   phoneCountry?: true
+  phoneVerified?: true
   profilepic?: true
   id_proof?: true
   address_proof?: true
@@ -136,6 +140,7 @@ export type AgentMaxAggregateInputType = {
   password?: true
   phone?: true
   phoneCountry?: true
+  phoneVerified?: true
   profilepic?: true
   id_proof?: true
   address_proof?: true
@@ -154,6 +159,7 @@ export type AgentCountAggregateInputType = {
   password?: true
   phone?: true
   phoneCountry?: true
+  phoneVerified?: true
   profilepic?: true
   id_proof?: true
   address_proof?: true
@@ -259,6 +265,7 @@ export type AgentGroupByOutputType = {
   password: string
   phone: string | null
   phoneCountry: string
+  phoneVerified: boolean
   profilepic: string | null
   id_proof: string | null
   address_proof: string | null
@@ -300,6 +307,7 @@ export type AgentWhereInput = {
   password?: Prisma.StringFilter<"Agent"> | string
   phone?: Prisma.StringNullableFilter<"Agent"> | string | null
   phoneCountry?: Prisma.StringFilter<"Agent"> | string
+  phoneVerified?: Prisma.BoolFilter<"Agent"> | boolean
   profilepic?: Prisma.StringNullableFilter<"Agent"> | string | null
   id_proof?: Prisma.StringNullableFilter<"Agent"> | string | null
   address_proof?: Prisma.StringNullableFilter<"Agent"> | string | null
@@ -326,6 +334,7 @@ export type AgentOrderByWithRelationInput = {
   password?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   phoneCountry?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   profilepic?: Prisma.SortOrderInput | Prisma.SortOrder
   id_proof?: Prisma.SortOrderInput | Prisma.SortOrder
   address_proof?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -343,6 +352,7 @@ export type AgentOrderByWithRelationInput = {
 export type AgentWhereUniqueInput = Prisma.AtLeast<{
   id?: number
   email?: string
+  phone?: string
   AND?: Prisma.AgentWhereInput | Prisma.AgentWhereInput[]
   OR?: Prisma.AgentWhereInput[]
   NOT?: Prisma.AgentWhereInput | Prisma.AgentWhereInput[]
@@ -353,8 +363,8 @@ export type AgentWhereUniqueInput = Prisma.AtLeast<{
   rating?: Prisma.FloatNullableFilter<"Agent"> | number | null
   ratingCount?: Prisma.IntFilter<"Agent"> | number
   password?: Prisma.StringFilter<"Agent"> | string
-  phone?: Prisma.StringNullableFilter<"Agent"> | string | null
   phoneCountry?: Prisma.StringFilter<"Agent"> | string
+  phoneVerified?: Prisma.BoolFilter<"Agent"> | boolean
   profilepic?: Prisma.StringNullableFilter<"Agent"> | string | null
   id_proof?: Prisma.StringNullableFilter<"Agent"> | string | null
   address_proof?: Prisma.StringNullableFilter<"Agent"> | string | null
@@ -367,7 +377,7 @@ export type AgentWhereUniqueInput = Prisma.AtLeast<{
   assignments?: Prisma.OrderAssignmentListRelationFilter
   categories?: Prisma.AgentCategoryListRelationFilter
   documents?: Prisma.AgentDocumentListRelationFilter
-}, "id" | "email">
+}, "id" | "email" | "phone">
 
 export type AgentOrderByWithAggregationInput = {
   id?: Prisma.SortOrder
@@ -381,6 +391,7 @@ export type AgentOrderByWithAggregationInput = {
   password?: Prisma.SortOrder
   phone?: Prisma.SortOrderInput | Prisma.SortOrder
   phoneCountry?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   profilepic?: Prisma.SortOrderInput | Prisma.SortOrder
   id_proof?: Prisma.SortOrderInput | Prisma.SortOrder
   address_proof?: Prisma.SortOrderInput | Prisma.SortOrder
@@ -407,6 +418,7 @@ export type AgentScalarWhereWithAggregatesInput = {
   password?: Prisma.StringWithAggregatesFilter<"Agent"> | string
   phone?: Prisma.StringNullableWithAggregatesFilter<"Agent"> | string | null
   phoneCountry?: Prisma.StringWithAggregatesFilter<"Agent"> | string
+  phoneVerified?: Prisma.BoolWithAggregatesFilter<"Agent"> | boolean
   profilepic?: Prisma.StringNullableWithAggregatesFilter<"Agent"> | string | null
   id_proof?: Prisma.StringNullableWithAggregatesFilter<"Agent"> | string | null
   address_proof?: Prisma.StringNullableWithAggregatesFilter<"Agent"> | string | null
@@ -424,6 +436,7 @@ export type AgentCreateInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -450,6 +463,7 @@ export type AgentUncheckedCreateInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -475,6 +489,7 @@ export type AgentUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -501,6 +516,7 @@ export type AgentUncheckedUpdateInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -527,6 +543,7 @@ export type AgentCreateManyInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -544,6 +561,7 @@ export type AgentUpdateManyMutationInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -562,6 +580,7 @@ export type AgentUncheckedUpdateManyInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -585,6 +604,7 @@ export type AgentCountOrderByAggregateInput = {
   password?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   phoneCountry?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   profilepic?: Prisma.SortOrder
   id_proof?: Prisma.SortOrder
   address_proof?: Prisma.SortOrder
@@ -609,6 +629,7 @@ export type AgentMaxOrderByAggregateInput = {
   password?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   phoneCountry?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   profilepic?: Prisma.SortOrder
   id_proof?: Prisma.SortOrder
   address_proof?: Prisma.SortOrder
@@ -627,6 +648,7 @@ export type AgentMinOrderByAggregateInput = {
   password?: Prisma.SortOrder
   phone?: Prisma.SortOrder
   phoneCountry?: Prisma.SortOrder
+  phoneVerified?: Prisma.SortOrder
   profilepic?: Prisma.SortOrder
   id_proof?: Prisma.SortOrder
   address_proof?: Prisma.SortOrder
@@ -781,6 +803,7 @@ export type AgentCreateWithoutAddressInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -806,6 +829,7 @@ export type AgentUncheckedCreateWithoutAddressInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -846,6 +870,7 @@ export type AgentUpdateWithoutAddressInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -871,6 +896,7 @@ export type AgentUncheckedUpdateWithoutAddressInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -895,6 +921,7 @@ export type AgentCreateWithoutBankDetailsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -920,6 +947,7 @@ export type AgentUncheckedCreateWithoutBankDetailsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -960,6 +988,7 @@ export type AgentUpdateWithoutBankDetailsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -985,6 +1014,7 @@ export type AgentUncheckedUpdateWithoutBankDetailsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1009,6 +1039,7 @@ export type AgentCreateWithoutCategoriesInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1034,6 +1065,7 @@ export type AgentUncheckedCreateWithoutCategoriesInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1074,6 +1106,7 @@ export type AgentUpdateWithoutCategoriesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1099,6 +1132,7 @@ export type AgentUncheckedUpdateWithoutCategoriesInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1123,6 +1157,7 @@ export type AgentCreateWithoutDocumentsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1148,6 +1183,7 @@ export type AgentUncheckedCreateWithoutDocumentsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1188,6 +1224,7 @@ export type AgentUpdateWithoutDocumentsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1213,6 +1250,7 @@ export type AgentUncheckedUpdateWithoutDocumentsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1237,6 +1275,7 @@ export type AgentCreateWithoutExtraMaterialsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1262,6 +1301,7 @@ export type AgentUncheckedCreateWithoutExtraMaterialsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1302,6 +1342,7 @@ export type AgentUpdateWithoutExtraMaterialsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1327,6 +1368,7 @@ export type AgentUncheckedUpdateWithoutExtraMaterialsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1351,6 +1393,7 @@ export type AgentCreateWithoutOrdersInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1376,6 +1419,7 @@ export type AgentUncheckedCreateWithoutOrdersInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1416,6 +1460,7 @@ export type AgentUpdateWithoutOrdersInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1441,6 +1486,7 @@ export type AgentUncheckedUpdateWithoutOrdersInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1465,6 +1511,7 @@ export type AgentCreateWithoutAssignmentsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1490,6 +1537,7 @@ export type AgentUncheckedCreateWithoutAssignmentsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1530,6 +1578,7 @@ export type AgentUpdateWithoutAssignmentsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1555,6 +1604,7 @@ export type AgentUncheckedUpdateWithoutAssignmentsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1579,6 +1629,7 @@ export type AgentCreateWithoutSettlementsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1604,6 +1655,7 @@ export type AgentUncheckedCreateWithoutSettlementsInput = {
   password: string
   phone?: string | null
   phoneCountry?: string
+  phoneVerified?: boolean
   profilepic?: string | null
   id_proof?: string | null
   address_proof?: string | null
@@ -1644,6 +1696,7 @@ export type AgentUpdateWithoutSettlementsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1669,6 +1722,7 @@ export type AgentUncheckedUpdateWithoutSettlementsInput = {
   password?: Prisma.StringFieldUpdateOperationsInput | string
   phone?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   phoneCountry?: Prisma.StringFieldUpdateOperationsInput | string
+  phoneVerified?: Prisma.BoolFieldUpdateOperationsInput | boolean
   profilepic?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   id_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
   address_proof?: Prisma.NullableStringFieldUpdateOperationsInput | string | null
@@ -1779,6 +1833,7 @@ export type AgentSelect<ExtArgs extends runtime.Types.Extensions.InternalArgs = 
   password?: boolean
   phone?: boolean
   phoneCountry?: boolean
+  phoneVerified?: boolean
   profilepic?: boolean
   id_proof?: boolean
   address_proof?: boolean
@@ -1806,6 +1861,7 @@ export type AgentSelectCreateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   password?: boolean
   phone?: boolean
   phoneCountry?: boolean
+  phoneVerified?: boolean
   profilepic?: boolean
   id_proof?: boolean
   address_proof?: boolean
@@ -1824,6 +1880,7 @@ export type AgentSelectUpdateManyAndReturn<ExtArgs extends runtime.Types.Extensi
   password?: boolean
   phone?: boolean
   phoneCountry?: boolean
+  phoneVerified?: boolean
   profilepic?: boolean
   id_proof?: boolean
   address_proof?: boolean
@@ -1842,13 +1899,14 @@ export type AgentSelectScalar = {
   password?: boolean
   phone?: boolean
   phoneCountry?: boolean
+  phoneVerified?: boolean
   profilepic?: boolean
   id_proof?: boolean
   address_proof?: boolean
   createdAt?: boolean
 }
 
-export type AgentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "email" | "isVerified" | "isAvailable" | "rating" | "ratingCount" | "password" | "phone" | "phoneCountry" | "profilepic" | "id_proof" | "address_proof" | "createdAt", ExtArgs["result"]["agent"]>
+export type AgentOmit<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = runtime.Types.Extensions.GetOmit<"id" | "name" | "type" | "email" | "isVerified" | "isAvailable" | "rating" | "ratingCount" | "password" | "phone" | "phoneCountry" | "phoneVerified" | "profilepic" | "id_proof" | "address_proof" | "createdAt", ExtArgs["result"]["agent"]>
 export type AgentInclude<ExtArgs extends runtime.Types.Extensions.InternalArgs = runtime.Types.Extensions.DefaultArgs> = {
   orders?: boolean | Prisma.Agent$ordersArgs<ExtArgs>
   bankDetails?: boolean | Prisma.Agent$bankDetailsArgs<ExtArgs>
@@ -1887,6 +1945,7 @@ export type $AgentPayload<ExtArgs extends runtime.Types.Extensions.InternalArgs 
     password: string
     phone: string | null
     phoneCountry: string
+    phoneVerified: boolean
     profilepic: string | null
     id_proof: string | null
     address_proof: string | null
@@ -2333,6 +2392,7 @@ export interface AgentFieldRefs {
   readonly password: Prisma.FieldRef<"Agent", 'String'>
   readonly phone: Prisma.FieldRef<"Agent", 'String'>
   readonly phoneCountry: Prisma.FieldRef<"Agent", 'String'>
+  readonly phoneVerified: Prisma.FieldRef<"Agent", 'Boolean'>
   readonly profilepic: Prisma.FieldRef<"Agent", 'String'>
   readonly id_proof: Prisma.FieldRef<"Agent", 'String'>
   readonly address_proof: Prisma.FieldRef<"Agent", 'String'>

@@ -3,40 +3,13 @@ import { Link, useNavigate, useLocation } from "react-router-dom";
 import api from "../../api";
 import toast from "react-hot-toast";
 import { useAuth } from "../../context/AuthContext";
-import { Camera, X, ChevronRight, ChevronLeft, Check, ChevronDown } from "lucide-react";
+import { Camera, X, ChevronRight, ChevronLeft, Check } from "lucide-react";
+import PhoneField from "../../components/PhoneField";
 
 type Category = { id: number; name: string; slug: string; documentRequirements: DocReq[] };
 type DocReq = { id: number; name: string; description: string | null; isRequired: boolean };
 
 const STEPS_AGENT = ["Basic Info", "Categories", "Documents", "Bank Details"];
-
-function IndiaFlag() {
-  return (
-    <svg width="22" height="15" viewBox="0 0 22 15" xmlns="http://www.w3.org/2000/svg">
-      <rect width="22" height="5" fill="#FF9933" />
-      <rect y="5" width="22" height="5" fill="#FFFFFF" />
-      <rect y="10" width="22" height="5" fill="#138808" />
-      <circle cx="11" cy="7.5" r="2" fill="none" stroke="#000080" strokeWidth="0.6" />
-      <circle cx="11" cy="7.5" r="0.4" fill="#000080" />
-    </svg>
-  );
-}
-
-function USAFlag() {
-  return (
-    <svg width="22" height="15" viewBox="0 0 22 15" xmlns="http://www.w3.org/2000/svg">
-      {[0,1,2,3,4,5].map((i) => (
-        <rect key={i} y={i * 2.5} width="22" height="2.5" fill={i % 2 === 0 ? "#B22234" : "#FFFFFF"} />
-      ))}
-      <rect width="9" height="8" fill="#3C3B6E" />
-    </svg>
-  );
-}
-
-const COUNTRIES = [
-  { value: "INDIA", label: "India", code: "+91", Flag: IndiaFlag },
-  { value: "USA", label: "USA", code: "+1", Flag: USAFlag },
-];
 
 export default function Register() {
   const { login, token, role: authRole } = useAuth();
@@ -52,6 +25,9 @@ export default function Register() {
   );
   const [step, setStep] = useState<number>(isResuming ? resumeStep : 0);
   const [form, setForm] = useState({ email: "", password: "", name: "", address: "", pin: "", city: "", phone: "", phoneCountry: "INDIA" });
+  // Set only once PhoneField has completed an OTP verification; the backend
+  // refuses any registration without it.
+  const [firebaseIdToken, setFirebaseIdToken] = useState<string | null>(null);
   const [selectedCategoryIds, setSelectedCategoryIds] = useState<number[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [docFiles, setDocFiles] = useState<Record<number, File>>({});
@@ -64,8 +40,6 @@ export default function Register() {
   const [citySuggestions, setCitySuggestions] = useState<typeof cities>([]);
   const [showCitySuggestions, setShowCitySuggestions] = useState(false);
   const cityRef = useRef<HTMLDivElement>(null);
-  const [showCountryPicker, setShowCountryPicker] = useState(false);
-  const countryPickerRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
     api.get("/auth/cities/active").then((r) => setCities(r.data.cities)).catch(() => {});
@@ -97,7 +71,6 @@ export default function Register() {
   useEffect(() => {
     const handler = (e: MouseEvent) => {
       if (cityRef.current && !cityRef.current.contains(e.target as Node)) setShowCitySuggestions(false);
-      if (countryPickerRef.current && !countryPickerRef.current.contains(e.target as Node)) setShowCountryPicker(false);
     };
     document.addEventListener("mousedown", handler);
     return () => document.removeEventListener("mousedown", handler);
@@ -111,11 +84,6 @@ export default function Register() {
       setCitySuggestions(q ? cities.filter((c) => c.name.includes(q)).slice(0, 8) : []);
       setShowCitySuggestions(!!q);
     }
-  };
-
-  const handlePhoneInput = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const val = e.target.value.replace(/\D/g, "");
-    setForm({ ...form, phone: val });
   };
 
   const pickCity = (name: string) => { setForm({ ...form, city: name }); setShowCitySuggestions(false); };
@@ -160,7 +128,7 @@ export default function Register() {
   const requiredDocs = uniqueDocReqs.filter((r) => r.isRequired);
 
   const canProceedStep = (s: number): boolean => {
-    if (s === 0) return !!form.name && !!form.email && !!form.password && !!form.address && !!form.pin && !!form.city;
+    if (s === 0) return !!form.name && !!form.email && !!form.password && !!form.address && !!form.pin && !!form.city && !!firebaseIdToken;
     if (s === 1) return selectedCategoryIds.length > 0;
     // A required doc is satisfied if it's newly uploaded OR already on the server
     if (s === 2) return requiredDocs.every((r) => docFiles[r.id] || alreadyUploadedReqIds.has(r.id));
@@ -194,6 +162,7 @@ export default function Register() {
         formData.append("city", form.city);
         formData.append("phone", form.phone);
         formData.append("phoneCountry", form.phoneCountry);
+        formData.append("firebaseIdToken", firebaseIdToken!);
         formData.append("type", "general");
         formData.append("categoryIds", JSON.stringify(selectedCategoryIds));
         const res = await api.post("/auth/agent/register", formData);
@@ -256,11 +225,16 @@ export default function Register() {
   // ─── USER REGISTRATION (unchanged) ───────────────────────────────────────
   const handleUserSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    if (!firebaseIdToken) {
+      toast.error("Please verify your phone number first");
+      return;
+    }
     setLoading(true);
     try {
       await api.post("/auth/user/register", {
         email: form.email, password: form.password, name: form.name,
         address: form.address, pin: form.pin, city: form.city, phone: form.phone, phoneCountry: form.phoneCountry,
+        firebaseIdToken,
       });
       toast.success("Registration successful! Please login.");
       navigate("/login");
@@ -286,7 +260,7 @@ export default function Register() {
           </div>
           <div className="flex gap-1 bg-gray-100 rounded-md p-0.5 mb-4">
             {(["USER", "AGENT"] as const).map((r) => (
-              <button key={r} onClick={() => { setRoleState(r); setStep(0); }}
+              <button key={r} onClick={() => { setRoleState(r); setStep(0); setFirebaseIdToken(null); }}
                 className={`flex-1 py-2 text-xs font-semibold rounded-md transition ${role === r ? "bg-white text-gray-900 shadow-sm" : "text-gray-400"}`}>
                 {r === "USER" ? "Customer" : "Service Partner"}
               </button>
@@ -296,27 +270,13 @@ export default function Register() {
             <input type="text" required value={form.name} onChange={set("name")} className={inputCls} placeholder="Full name" />
             <input type="email" required value={form.email} onChange={set("email")} className={inputCls} placeholder="Email address" />
             <input type="password" required value={form.password} onChange={set("password")} className={inputCls} placeholder="Password" />
-            <div className="flex gap-2">
-              <div className="relative w-[110px] flex-shrink-0" ref={countryPickerRef}>
-                <button type="button" onClick={() => setShowCountryPicker((v) => !v)}
-                  className="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-md focus:ring-1 focus:ring-gray-400 outline-none text-sm cursor-pointer flex items-center justify-between gap-1">
-                  {(() => { const C = COUNTRIES.find((c) => c.value === form.phoneCountry) ?? COUNTRIES[0]; return <><C.Flag /><span className="text-xs">{C.code}</span></>; })()}
-                  <ChevronDown size={12} className="text-gray-400 shrink-0" />
-                </button>
-                {showCountryPicker && (
-                  <div className="absolute z-30 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1">
-                    {COUNTRIES.map((c) => (
-                      <button key={c.value} type="button"
-                        onClick={() => { setForm({ ...form, phoneCountry: c.value }); setShowCountryPicker(false); }}
-                        className="w-full text-left px-2.5 py-1.5 hover:bg-gray-50 text-sm border-b border-gray-50 last:border-0 flex items-center gap-2">
-                        <c.Flag />{c.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <input type="text" inputMode="numeric" required value={form.phone} onChange={handlePhoneInput} className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:ring-1 focus:ring-gray-400 focus:bg-white outline-none text-sm min-w-0" placeholder="Phone number" />
-            </div>
+            <PhoneField
+              phone={form.phone}
+              phoneCountry={form.phoneCountry}
+              onChange={(next) => setForm({ ...form, ...next })}
+              onVerifiedChange={setFirebaseIdToken}
+              role="USER"
+            />
             <input type="text" required value={form.address} onChange={set("address")} className={inputCls} placeholder="Address" />
             <div className="grid grid-cols-2 gap-2">
               <input type="text" inputMode="numeric" pattern="[0-9]*" required value={form.pin} onChange={(e) => { const val = e.target.value.replace(/\D/g, ""); setForm({ ...form, pin: val }); }} className={inputCls} placeholder="PIN code" />
@@ -336,9 +296,9 @@ export default function Register() {
                 )}
               </div>
             </div>
-            <button type="submit" disabled={loading}
+            <button type="submit" disabled={loading || !firebaseIdToken}
               className="w-full py-2.5 bg-gray-900 text-white rounded-full text-sm font-semibold hover:bg-gray-800 active:scale-[0.98] disabled:opacity-50 transition-all shadow-sm mt-1">
-              {loading ? "Registering..." : "Create Account"}
+              {loading ? "Registering..." : !firebaseIdToken ? "Verify phone to continue" : "Create Account"}
             </button>
           </form>
           <p className="text-center text-xs text-gray-400 mt-5">
@@ -369,7 +329,7 @@ export default function Register() {
         {!isResuming && (
           <div className="flex gap-1 bg-gray-100 rounded-md p-0.5 mb-4">
             {(["USER", "AGENT"] as const).map((r) => (
-              <button key={r} onClick={() => { setRoleState(r); setStep(0); }}
+              <button key={r} onClick={() => { setRoleState(r); setStep(0); setFirebaseIdToken(null); }}
                 className={`flex-1 py-2 text-xs font-semibold rounded-md transition ${role === r ? "bg-white text-gray-900 shadow-sm" : "text-gray-400"}`}>
                 {r === "USER" ? "Customer" : "Service Partner"}
               </button>
@@ -393,27 +353,13 @@ export default function Register() {
             <input type="text" value={form.name} onChange={set("name")} className={inputCls} placeholder="Full name" />
             <input type="email" value={form.email} onChange={set("email")} className={inputCls} placeholder="Email address" />
             <input type="password" value={form.password} onChange={set("password")} className={inputCls} placeholder="Password" />
-            <div className="flex gap-2">
-              <div className="relative w-[110px] flex-shrink-0" ref={countryPickerRef}>
-                <button type="button" onClick={() => setShowCountryPicker((v) => !v)}
-                  className="w-full px-2 py-2 bg-gray-50 border border-gray-200 rounded-md focus:ring-1 focus:ring-gray-400 outline-none text-sm cursor-pointer flex items-center justify-between gap-1">
-                  {(() => { const C = COUNTRIES.find((c) => c.value === form.phoneCountry) ?? COUNTRIES[0]; return <><C.Flag /><span className="text-xs">{C.code}</span></>; })()}
-                  <ChevronDown size={12} className="text-gray-400 shrink-0" />
-                </button>
-                {showCountryPicker && (
-                  <div className="absolute z-30 w-full bg-white border border-gray-200 rounded-md shadow-lg mt-1">
-                    {COUNTRIES.map((c) => (
-                      <button key={c.value} type="button"
-                        onClick={() => { setForm({ ...form, phoneCountry: c.value }); setShowCountryPicker(false); }}
-                        className="w-full text-left px-2.5 py-1.5 hover:bg-gray-50 text-sm border-b border-gray-50 last:border-0 flex items-center gap-2">
-                        <c.Flag />{c.label}
-                      </button>
-                    ))}
-                  </div>
-                )}
-              </div>
-              <input type="text" inputMode="numeric" value={form.phone} onChange={handlePhoneInput} className="flex-1 px-3 py-2 bg-gray-50 border border-gray-200 rounded-md focus:ring-1 focus:ring-gray-400 focus:bg-white outline-none text-sm min-w-0" placeholder="Phone number" />
-            </div>
+            <PhoneField
+              phone={form.phone}
+              phoneCountry={form.phoneCountry}
+              onChange={(next) => setForm({ ...form, ...next })}
+              onVerifiedChange={setFirebaseIdToken}
+              role="AGENT"
+            />
             <input type="text" value={form.address} onChange={set("address")} className={inputCls} placeholder="Address" />
             <div className="grid grid-cols-2 gap-2">
               <input type="text" inputMode="numeric" pattern="[0-9]*" value={form.pin} onChange={(e) => { const val = e.target.value.replace(/\D/g, ""); setForm({ ...form, pin: val }); }} className={inputCls} placeholder="PIN code" />
