@@ -5,6 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "bun index.ts",
+    "start": "bun index.ts",
     "reset:minimal": "bun reset-minimal.ts"
   },
   "devDependencies": {

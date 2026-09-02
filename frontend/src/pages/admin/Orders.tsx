@@ -135,7 +135,7 @@ export default function AdminOrders() {
 
     // Collect all category IDs from the order's subservices
     const orderCategoryIds: number[] = [
-      ...new Set(
+      ...new Set<number>(
         (order.orders || [])
           .map((o: any) => o.subservice?.category?.id)
           .filter((id: any): id is number => id != null)

@@ -26,7 +26,7 @@ const DEFAULT_SETTINGS = [
 ];
 
 export default function AdminSettings() {
-  const [settings, setSettings] = useState<Setting[]>([]);
+  const [, setSettings] = useState<Setting[]>([]);
   const [faqs, setFaqs] = useState<FAQ[]>([]);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
@@ -62,18 +62,6 @@ export default function AdminSettings() {
       console.error("Failed to load data", err);
     } finally {
       setLoading(false);
-    }
-  };
-
-  const saveSetting = async (key: string, value: string, label: string) => {
-    setSaving(true);
-    try {
-      await api.post("/admin/settings", { key, value, label });
-      fetchData();
-    } catch (err) {
-      console.error("Failed to save setting", err);
-    } finally {
-      setSaving(false);
     }
   };
 

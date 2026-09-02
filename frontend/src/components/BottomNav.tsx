@@ -10,9 +10,6 @@ import {
   Package,
   Users,
   Grid3X3,
-  MapPin,
-  Wrench,
-  FileText,
   HelpCircle,
 } from "lucide-react";
 
