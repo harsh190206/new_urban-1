@@ -42,8 +42,8 @@ export default function Register() {
   const cityRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    api.get("/auth/cities/active").then((r) => setCities(r.data.cities)).catch(() => {});
-    api.get("/auth/categories/active").then((r) => setCategories(r.data.categories)).catch(() => {});
+    api.get("/auth/cities/active").then((r) => setCities(r.data.cities ?? [])).catch(() => {});
+    api.get("/auth/categories/active").then((r) => setCategories(r.data.categories ?? [])).catch(() => {});
   }, []);
 
   // When resuming, fetch profile to get current categories & uploaded docs
